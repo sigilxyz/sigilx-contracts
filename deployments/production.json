@@ -1,0 +1,60 @@
+{
+  "network": "base-mainnet",
+  "chainId": 8453,
+  "deployedAt": null,
+  "deployer": null,
+  "commit": null,
+  "contracts": {
+    "SimpleReputationRegistry": {
+      "address": null,
+      "txHash": null
+    },
+    "SigilXCertificateRegistry": {
+      "address": null,
+      "txHash": null
+    },
+    "SigilXHook": {
+      "address": null,
+      "txHash": null
+    },
+    "SigilXStakeDispute": {
+      "address": null,
+      "txHash": null,
+      "constructorArgs": {
+        "usdcToken": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "slashBasisPoints": 500,
+        "maxStake": 10000000,
+        "disputeWindow": 259200,
+        "treasury": null
+      }
+    },
+    "Timelock": {
+      "address": null
+    },
+    "QuorumHook": {
+      "address": null
+    },
+    "CertRegistrantRouter": {
+      "address": null
+    },
+    "SigilXToken": {
+      "address": null
+    },
+    "TreasuryManager": {
+      "address": null
+    },
+    "FeeRouter": {
+      "address": null
+    },
+    "Governor": {
+      "address": null
+    }
+  },
+  "tokens": {
+    "USDC": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "SigilXToken": null
+  },
+  "rpcUrl": "https://mainnet.base.org",
+  "explorerUrl": "https://basescan.org",
+  "_note": "Production addresses are null until mainnet deployment. Run DeploySigilXProxied.s.sol on chain 8453 and update this file with the resulting addresses."
+}

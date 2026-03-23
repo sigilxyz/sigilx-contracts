@@ -1,0 +1,60 @@
+{
+  "network": "base-sepolia",
+  "chainId": 84532,
+  "deployedAt": "2026-03-21T00:00:00Z",
+  "deployer": "0x046aD6Cd4ACc219AbC81E189B4016107641b308D",
+  "commit": "layer1-redeploy",
+  "contracts": {
+    "SimpleReputationRegistry": {
+      "address": "0x5bF12808D320A96819Ab11747687A02A05740854",
+      "proxy": true
+    },
+    "SigilXCertificateRegistry": {
+      "address": "0xc1c20B5507f4F27480Fe580aD7C3dE8A335caBfE",
+      "proxy": false,
+      "note": "Redeployed 2026-03-21 for L1-L2 wiring (old deployer key unavailable)"
+    },
+    "SigilXHook": {
+      "address": "0x51B45198d53CE74731Fb4E1cc8D4B506D25c8CC7",
+      "proxy": true
+    },
+    "SigilXStakeDispute": {
+      "address": "0x85CB430a1F3884e38DD018c425B3662b7ef0B844",
+      "proxy": true,
+      "constructorArgs": {
+        "usdcToken": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+        "slashBasisPoints": 1000,
+        "owner": "0x046aD6Cd4ACc219AbC81E189B4016107641b308D"
+      }
+    },
+    "Timelock": {
+      "address": "0xCe13349EF588116816287dD30eC006A7Db6B3dD0",
+      "minDelay": 300
+    },
+    "CertRegistrantRouter": {
+      "address": "0xc80498A43003F92F911CfdB1EC5e6Eb69D890279",
+      "note": "Redeployed 2026-03-21 for L1-L2 wiring"
+    },
+    "MockSigilXToken": {
+      "address": "0x69F0166261b2F22018C203548c74419a3FCAeb39"
+    },
+    "TreasuryManager": {
+      "address": "0xBAd92A83B751F060ed452Ff9725AACBcB8eDb406",
+      "proxy": true
+    },
+    "FeeRouter": {
+      "address": "0x010F576Ba8BA6f22c7365Eeb9E3a745327f7452F",
+      "proxy": true
+    },
+    "Governor": {
+      "address": "0xa6fC64C68c7E62f420CBDDAe87b3b369C7Ccbf85"
+    }
+  },
+  "tokens": {
+    "USDC": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+    "MockSigilXToken": "0x69F0166261b2F22018C203548c74419a3FCAeb39"
+  },
+  "rpcUrl": "https://sepolia.base.org",
+  "explorerUrl": "https://sepolia.basescan.org",
+  "previousDeployer": "0x96bc01D80341bb05e6DC782c50ABe927371aD41e"
+}

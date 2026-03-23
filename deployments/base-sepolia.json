@@ -1,0 +1,120 @@
+{
+  "network": "base-sepolia",
+  "chainId": 84532,
+  "deployedAt": "2026-03-21",
+  "deployer": "0x046aD6Cd4ACc219AbC81E189B4016107641b308D",
+  "vrfSubscriptionId": "77115858737848349351091156624182017994949359113627384364491566015286841993797",
+  "version": "v5-l1-rewired",
+  "proxyStatus": "DEPLOYED",
+  "contracts": {
+    "EvaluatorRegistry": {
+      "implementation": "0xe512b386Ec98BF67d4036f712356306256001c6D",
+      "proxy": "0x2c0F572Fbcb24FD9b5ebFb768678D6f725344919",
+      "deployTx": "0xc83b9cd645cc95d4a2bcbd8df81cdbbd2479305ed8f07940c1ce8d683caec134",
+      "uups": true
+    },
+    "WorldIDSybilGuard": {
+      "implementation": "0x408CA6958A40524a827f1c30709f457B438A9454",
+      "proxy": "0xFE87EF797Ca2Fae7FCf9AE83146a0A536490300a",
+      "deployTx": "0xa000c11b40d2332fb707c28217f89b205eb8d24fff6675c9646020732d663b1b",
+      "uups": true
+    },
+    "VRFCommitteeSelector": {
+      "implementation": "0x10079B8ee00Af7a596000946a898A51f9E027979",
+      "proxy": "0x20f84c552CcF538fB16275EBE120902eb2A23C95",
+      "deployTx": "0x5a910058cec5313e7b585f12b5c3419b5788be3fb5e9517eff890afd75d7f0bf",
+      "uups": true
+    },
+    "SigilXEvaluatorV2": {
+      "implementation": "0x3371c07e36efA9eBe712297b39355DBdADdc8564",
+      "proxy": "0xf5D04616ecA3be49feA323c205451936d7816B01",
+      "deployTx": "0xf30ecc82496265197f276a6445b41904176a4111b5125cf6fefc5a937e3ac932",
+      "uups": true
+    },
+    "OptimisticEscrow": {
+      "implementation": "0xf170699e2cf68B4557E20Bc7ce6A56DB602317fA",
+      "proxy": "0xdaE8a643C10392cD85376F999808E8eb67d00757",
+      "deployTx": "0x7275e3359ad05f84d34e1e9087634d46d5474e5ff0904fc5dc932034d9385b35",
+      "uups": true
+    },
+    "DisputeKernel": {
+      "implementation": "0xE377F2ba6C462b177E6BdddCc0CfA2AA01926420",
+      "proxy": "0x3aEf85a061832d0720c3Bb6f92Bd20ef4B91be26",
+      "deployTx": "0x10563d5f80fcdc818dc4103db515b4d5d40312b96967d11cb883a5eed9bd39f4",
+      "uups": true
+    },
+    "SigilXJobRouter": {
+      "implementation": "0xdFF3A1f44421C79e2a91F170eCF51356CaFC876D",
+      "previousImplementation": "0x8d91Bd205F3b122A31364F670b464e69914ae40d",
+      "proxy": "0xB659D06d2E06afFCAeeEd683b0997f9dd8EBA2Ee",
+      "deployTx": "0x65fcadae6d284eb5a4d0ffd8f2fe048348d15a572160486f1486baca38629c26",
+      "upgradeTx": "0xf59b7565851272dbdc7469f55db34c30a7b33be4fecf0342b05dc7fb3c52ecfb",
+      "uups": true,
+      "note": "Upgraded to add setCertRegistry() admin function for L1 rewiring"
+    }
+  },
+  "layer1Contracts": {
+    "CertificateRegistry": "0xc1c20B5507f4F27480Fe580aD7C3dE8A335caBfE",
+    "CertRegistrantRouter": "0xc80498A43003F92F911CfdB1EC5e6Eb69D890279",
+    "MockSigilXToken": "0x69F0166261b2F22018C203548c74419a3FCAeb39",
+    "SigilXToken": "0x26213ff340f919ECf7D482847406A5b618Ec45f8",
+    "SimpleReputationRegistry": "0x5bF12808D320A96819Ab11747687A02A05740854",
+    "SigilXHookV1": "0x51B45198d53CE74731Fb4E1cc8D4B506D25c8CC7",
+    "TreasuryManager": "0xBAd92A83B751F060ed452Ff9725AACBcB8eDb406",
+    "FeeRouter": "0x010F576Ba8BA6f22c7365Eeb9E3a745327f7452F",
+    "StakeDispute": "0x85CB430a1F3884e38DD018c425B3662b7ef0B844",
+    "Timelock": "0xCe13349EF588116816287dD30eC006A7Db6B3dD0",
+    "Governor": "0xa6fC64C68c7E62f420CBDDAe87b3b369C7Ccbf85"
+  },
+  "wiring": {
+    "status": "COMPLETE",
+    "completedAt": "2026-03-21",
+    "note": "L1 redeployed with new deployer (old 0x96bc key unavailable). JobRouter upgraded with setCertRegistry().",
+    "actions": [
+      "Redeployed CertificateRegistry at 0xc1c20B5507f4F27480Fe580aD7C3dE8A335caBfE (owner: new deployer)",
+      "Redeployed CertRegistrantRouter at 0xc80498A43003F92F911CfdB1EC5e6Eb69D890279 (owner: new deployer)",
+      "CertRegistry.setAuthorisedRegistrant(Router: 0xc80498A43003F92F911CfdB1EC5e6Eb69D890279)",
+      "Router.authorizeCaller(EvaluatorV2: 0xf5D04616ecA3be49feA323c205451936d7816B01)",
+      "Router.authorizeCaller(OptimisticEscrow: 0xdaE8a643C10392cD85376F999808E8eb67d00757)",
+      "Router.authorizeCaller(SigilXHookV1: 0x4988827b5690C166c4A89F24D462DB7C8C1fb817)",
+      "Router.authorizeCaller(QuorumHook: 0x0812504A018984826Bb23E8d6DE951e5ADb04007)",
+      "Router.authorizeCaller(JobRouter proxy: 0xB659D06d2E06afFCAeeEd683b0997f9dd8EBA2Ee)",
+      "Upgraded SigilXJobRouter impl to 0xdFF3A1f44421C79e2a91F170eCF51356CaFC876D (added setCertRegistry)",
+      "JobRouter.setCertRegistry(Router: 0xc80498A43003F92F911CfdB1EC5e6Eb69D890279)"
+    ]
+  },
+  "crossContractWiring": {
+    "VRFCommitteeSelector.evaluatorContract": "0xf5D04616ecA3be49feA323c205451936d7816B01",
+    "SigilXEvaluatorV2.vrfSelector": "0x20f84c552CcF538fB16275EBE120902eb2A23C95",
+    "EvaluatorRegistry.recorder[EvaluatorV2]": true,
+    "EvaluatorRegistry.sybilGuard": "0xFE87EF797Ca2Fae7FCf9AE83146a0A536490300a",
+    "EvaluatorRegistry.slasher[EvaluatorV2]": true,
+    "note": "All Layer 2 cross-wiring was done in DeployBFTEvaluator.s.sol broadcast"
+  },
+  "externalDependencies": {
+    "VRFCoordinator": "0x5C210eF41CD1a72DE73bF76eC39637bB0d3d7BEe",
+    "USDC": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+    "WorldIDRouter": "0x42FF98C4E85212a5D31358ACbFe76a621b50fC02"
+  },
+  "previousLayer1Deployment": {
+    "deployer": "0x96bc01D80341bb05e6DC782c50ABe927371aD41e",
+    "note": "Old deployer key unavailable — redeployed fresh 2026-03-21",
+    "CertificateRegistry": "0xa574bEaD4d6c52e0cE685CEa53c3F26EA46F890A",
+    "CertRegistrantRouter": "0xB8dFeDBa09AD9cF42618660f01a261BEA068eDC1",
+    "SigilXHookV1": "0x4988827b5690C166c4A89F24D462DB7C8C1fb817",
+    "QuorumHook": "0x0812504A018984826Bb23E8d6DE951e5ADb04007",
+    "Timelock": "0x68062Bca8952f544d19a618aC1fb4C5025E8F1F9",
+    "FeeRouter": "0xa28D010df3cE65667F28FEd667F30FbF936e843c",
+    "TreasuryManager": "0xd5F814d4759d52D438C3c6674d71d326Aa23f082",
+    "MockSigilXToken": "0xAe4E99A9164f50A4bF38F19F7eaE0CFbeE5E145d"
+  },
+  "previousDeployment": {
+    "deployer": "0x9508752Ba171D37EBb3AA437927458E0a21D1e04",
+    "version": "v2-fixed (no proxies)",
+    "EvaluatorRegistry": "0xc3366aeFE1d1A6aA3758C989BdF935b01A363afc",
+    "WorldIDSybilGuard": "0x71Ddd1479948aE4803f854Dcf8bA8aC0cD7aCDe0",
+    "VRFCommitteeSelector": "0x95Cc0f0f91f1f9e06385cd319fD48bEc54436BEf",
+    "SigilXEvaluatorV2": "0x6a0aFd3D45BA238A6E4c525ab6Af6677Ae7714eB",
+    "OptimisticEscrow": "0x741B8083925829052d4E7FD08514c3c9aFB87658"
+  }
+}
