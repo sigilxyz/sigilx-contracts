@@ -2,69 +2,79 @@
 
 > Proofs that outlive promises.
 
-SigilX is a certification protocol on Base. Submit any verifiable work — a mathematical proof, a smart contract, a formal specification. Staked evaluators independently verify it. If they agree it's correct, a permanent certificate gets minted on-chain via ERC-8183. The work and proof go on IPFS so anyone can re-run the verification themselves.
-
-**Live at [sigilx.xyz](https://sigilx.xyz)**
+SigilX is a certification protocol on Base. Submit verifiable work — a mathematical proof, a smart contract, a formal specification. Staked evaluators independently verify it via VRF-selected committees. Correct work gets a permanent on-chain certificate via ERC-8183. The proof goes on IPFS so anyone can re-verify independently.
 
 ## How It Works
 
 ```
-Submit proof/contract → Evaluators verify independently → Certificate on-chain
-                         (VRF-selected, staked, slashable)
+Submit proof → Evaluators verify independently → Certificate on-chain
+                (VRF-selected, staked, slashable)
 ```
 
-1. **Submit** — Send a Lean 4 proof, Solidity contract, or formal spec via the x402 API
-2. **Verify** — Staked evaluators are randomly selected via Chainlink VRF. Each independently downloads the proof from IPFS, runs it, and votes
-3. **Certify** — If quorum agrees (66.67% by weight), an ERC-8183 certificate is minted atomically with payment settlement. Either both succeed or both revert
+1. **Submit** — Send a Lean 4 proof, Solidity contract, or formal spec via x402
+2. **Verify** — Staked evaluators are randomly selected via VRF. Each independently verifies and votes
+3. **Certify** — If quorum agrees (66.67% by weight), an ERC-8183 certificate is minted atomically with payment settlement
 
 ## Why On-Chain
 
-The chain matters when you don't trust the verifier:
-
-- **Escrow** — Payment locks until work is verified. No-show evaluators → automatic refund
-- **Slashing** — Wrong verdicts lose stake. A multisig can't punish its own majority; the contract enforces it automatically
-- **Permissionless challenge** — Anyone can dispute a verdict externally. The contract slashes the guilty party — they can't prevent it
+- **Escrow** — Payment locks until work is verified. No-show evaluators trigger automatic refund
+- **Slashing** — Wrong verdicts lose stake. The contract enforces it — no multisig can override
+- **Permissionless challenge** — Anyone can dispute a verdict. The contract slashes the guilty party
+- **Unanimity circuit breaker** — If all evaluators vote the same way on a non-trivial proof, the contract escalates to a challenge round. Perfect agreement at scale is suspicious, not reassuring
 
 ## Evaluator Economics
 
-- Evaluators stake to register (minimum 100 USDC)
-- Chainlink VRF randomly selects committees — you can't bribe a judge you can't identify
-- Committee size scales with job value: 5 members (<$100), 7 ($100-$1000), 13 ($1000+)
+- Stake SIGILX tokens to register as an evaluator
+- VRF randomly selects committees — you can't bribe a judge you can't identify
+- Committee size scales with job value: 3 (standard), 7 ($100+), 13 ($1000+)
 - Quadratic weighting: `weight = sqrt(stake * (reputation + 1))`
 - Wrong verdicts → 10% stake slashed. No-shows → slashed after 2 hours
-- No token inflation. Evaluators earn fees from real verification work
+- Evaluators earn fees from real verification work — no token inflation
+
+## Dual-Token Payment Model
+
+| What you're paying for | Token | Why |
+|----------------------|-------|-----|
+| Certificates | USDC | Evaluator economics require stable-value escrow |
+| Verification jobs | SIGILX or USDC | Protocol token creates buy pressure + 20% discount |
+| Compute / sandbox | SIGILX or USDC | Internal operations paid in protocol token |
+| Evaluator staking | SIGILX | Governance alignment |
 
 ## Contract Architecture
 
 ```
 contracts/
-├── sigil/                          # Core protocol (23 contracts)
+├── sigil/
 │   ├── SigilXCertificateRegistry   # ERC-8183 certificate storage (UUPS)
+│   ├── CertRegistrantRouter        # Multi-caller access control
 │   ├── SigilXFeeRouter             # Fee distribution: evaluators + treasury
-│   ├── SigilXJobRouter             # Job submission and lifecycle
-│   ├── SigilXQuorumHook            # BFT quorum voting (66.67% threshold)
-│   ├── SigilXOracleHook            # Single-evaluator verification
+│   ├── SigilXJobRouter             # Job lifecycle (ERC-8183)
+│   ├── SigilXQuorumHook            # BFT quorum voting
 │   ├── SigilXTreasuryManager       # Protocol treasury (UUPS)
 │   ├── SigilXGovernor              # OpenZeppelin Governor
-│   ├── SigilXTimelock              # Timelock controller (5 min testnet)
-│   ├── SigilXStakeDispute          # Bond-to-dispute with escalation ladder
+│   ├── SigilXTimelock              # Timelock controller
+│   ├── SigilXStakeDispute          # Bond-to-dispute with escalation
 │   ├── DisputeKernel               # Dispute resolution engine
 │   └── SimpleReputationRegistry    # ERC-8004 reputation tracking
-├── EvaluatorRegistry.sol           # Evaluator staking + registration
-├── SigilXEvaluatorV2.sol           # Committee voting + slashing
+├── EvaluatorRegistry.sol           # Evaluator staking + VRF committee selection
+├── SigilXEvaluatorV2.sol           # Committee voting + fee splits + inaction slashing
 ├── SigilXToken.sol                 # SIGILX governance token (ERC-20)
-├── VRFCommitteeSelector.sol        # Chainlink VRF v2.5 committee selection
-└── interfaces/                     # Shared interfaces (ERC-8183, etc.)
+├── VRFCommitteeSelector.sol        # Chainlink VRF v2.5
+├── OptimisticEscrow.sol            # Challenge windows + VRF escalation
+├── WorldIDSybilGuard.sol           # World ID proof-of-personhood gate
+└── interfaces/
+    └── IERC8183.sol                # Agent Interaction Standard
 ```
 
 ## Standards
 
 | Standard | Usage |
 |----------|-------|
-| ERC-8183 | Agent Interaction Standard — certificate format |
-| ERC-8004 | Decentralized Reputation — evaluator scores |
-| UUPS | Upgradeable proxy pattern on all core contracts |
+| [ERC-8183](https://eips.ethereum.org/EIPS/eip-8183) | Agentic commerce — job escrow + certificate format |
+| [ERC-8004](https://eips.ethereum.org/EIPS/eip-8004) | Agent identity + reputation |
+| UUPS | Upgradeable proxy on all core contracts |
 | Chainlink VRF v2.5 | Fair, verifiable committee selection |
+| World ID | Sybil-resistant evaluator registration |
 
 ## Deployments (Base Sepolia)
 
@@ -83,26 +93,9 @@ contracts/
 | Timelock | `0xCe13349EF588116816287dD30eC006A7Db6B3dD0` |
 | Governor | `0xa6fC64C68c7E62f420CBDDAe87b3b369C7Ccbf85` |
 | DisputeKernel | `0x3aEf85a061832d0720c3Bb6f92Bd20ef4B91be26` |
+| Bootstrap EvaluatorRegistry | `0x927ab46ffe72834591032fb259438f4314cf86c3` |
 
 All contracts owned by Timelock. Governance via Governor + multisig.
-
-## Payment Rails
-
-| Rail | How it works |
-|------|-------------|
-| x402 | USDC payment header, atomic settlement with certificate minting |
-| MPP | Stripe/Tempo micropayments |
-| ACP | Virtuals Protocol agent-to-agent payments |
-| Privy | Embedded wallet for human users at sigilx.xyz |
-
-## What's Honest
-
-- Zero paying users today
-- Competition math benchmarks: 0% automated solve rate (state of the art)
-- Protocol verification and contract properties: 100% pass rate
-- Premium evaluator tier needs bootstrapping
-- Commit-reveal for evaluator votes not shipped yet
-- 500+ tests passing, mainnet fork red/blue team all green
 
 ## Build
 
@@ -113,6 +106,12 @@ forge test
 
 ## Links
 
-- **Live:** [sigilx.xyz](https://sigilx.xyz)
-- **Skill:** [github.com/sigilxyz/sigilx-skill](https://github.com/sigilxyz/sigilx-skill)
-- **ERC-8183:** [ethereum-magicians.org](https://ethereum-magicians.org/t/erc-8183-agent-interaction-standard)
+- [sigilx.xyz](https://sigilx.xyz)
+- [sigilx-skill](https://github.com/sigilxyz/sigilx-skill)
+- [sigilx-contracts](https://github.com/sigilxyz/sigilx-contracts)
+- [ERC-8183 spec](https://eips.ethereum.org/EIPS/eip-8183)
+- [ERC-8004 spec](https://eips.ethereum.org/EIPS/eip-8004)
+
+## License
+
+MIT
